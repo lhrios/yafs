@@ -61,6 +61,9 @@
 			bool operator<(FATElement &fat_element){
 				return order < fat_element.order;
 			}
+			bool HasVolumeIDAttribute(){
+				return (attributes & ATTR_VOLUME_ID) != 0;
+			}
 			friend class FATDevice;
 			friend class FATDirectory;
 			friend class RootDirectory;
@@ -69,6 +72,7 @@
 			uint8 *long_name;
 			uint32 order;
 			bool reordered;
+			uint8 attributes;
 
 			vector<GenericEntry> directory_entries;
 

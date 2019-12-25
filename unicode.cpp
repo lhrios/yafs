@@ -41,6 +41,27 @@ void ConvertToUTF8(uint32 code , vector<uint8> &text_utf8){
 		text_utf8.push_back(uint8(0x80 | (code & 0x3F)));
 	}
 }
+
+char* Unicode::ConvertFromByteToUTF8(const char* text){
+	vector<uint8> text_utf8;
+	vector<uint8> text_byte;
+	uint32 i;
+	
+	for(i = 0; text[i]; i++) {
+		text_byte.push_back(uint8(text[i]));
+	}
+	text_byte.push_back(0);
+	
+	text_utf8 = ConvertFromByteToUTF8(text_byte);
+	
+	uint8* text_to_return = new uint8[text_utf8.size()];
+	for(i = 0; i < text_utf8.size(); i++){
+		text_to_return[i] = text_utf8[i];
+	}
+
+	return (char*) text_to_return;
+}
+
 vector<uint8> Unicode::ConvertFromByteToUTF8(vector<uint8> text_byte){
 	vector<uint8> text_utf8;
 	uint32 i;
@@ -49,6 +70,26 @@ vector<uint8> Unicode::ConvertFromByteToUTF8(vector<uint8> text_byte){
 		ConvertToUTF8(text_byte[i] , text_utf8);
 	}
 	return text_utf8;
+}
+
+char* Unicode::ConvertFromUTF16ToUTF8(const wchar_t* text){
+	vector<uint16> text_utf16;
+	vector<uint8> text_utf8;
+	uint32 i;
+	
+	for(i = 0; text[i]; i++) {
+		text_utf16.push_back(wchar_t(text[i]));
+	}
+	text_utf16.push_back(0);
+	
+	text_utf8 = ConvertFromUTF16ToUTF8(text_utf16);
+	
+	uint8* text_to_return = new uint8[text_utf8.size()];
+	for(i = 0; i < text_utf8.size(); i++){
+		text_to_return[i] = text_utf8[i];
+	}
+
+	return (char*) text_to_return;
 }
 
 vector<uint8> Unicode::ConvertFromUTF16ToUTF8(vector<uint16> text_utf16){

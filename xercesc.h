@@ -32,9 +32,10 @@
 
 	class Xercesc {
 		public:
-			static void InitializeXercesc();
-			static void TerminateXercesc();
+			static void Initialize();
+			static void Terminate();
 			static uint8* TranscodeToUTF8(const XMLCh *string);
+			static XMLCh* TranscodeFromUTF8(const uint8 *string);
 
 			class XercescException : public Exception {
 				public:

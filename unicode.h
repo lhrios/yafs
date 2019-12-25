@@ -36,6 +36,8 @@
 				public:
 					UnicodeException(string message = ""):Exception(message){}
 			};
+			static char* ConvertFromByteToUTF8(const char* text);
+			static char* ConvertFromUTF16ToUTF8(const wchar_t* text);		
 			static vector<uint8> ConvertFromUTF16ToUTF8(vector<uint16> text_utf16);
 			static vector<uint8> ConvertFromByteToUTF8(vector<uint8> text_byte);
 	};

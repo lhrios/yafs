@@ -7,6 +7,7 @@
 				<xs:element name="long_name" type="xs:string" minOccurs="0"/>
 				<xs:element name="short_name" type="xs:string"/>
 			</xs:sequence>
+			<xs:attribute name="volume" use="optional" type="xs:boolean" />
 			<xs:attribute name="order" use="required">
 				<xs:simpleType>
 					<xs:restriction base="xs:integer">

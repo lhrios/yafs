@@ -1,10 +1,10 @@
-CPPFLAGS=/c /EHsc /nologo /W4 /DWIN_SYSTEM /I"C:\Users\Luis\Desktop\xerces-c_2_8_0-x86-windows-vc_8_0\include"
+CPPFLAGS=/c /EHsc /nologo /W4 /DWIN_SYSTEM /I"D:\Librarys\xerces-c_2_8_0-x86-windows-vc_8_0\include"
 
 .cpp{bin\}.obj:
 	$(CPP) $(CPPFLAGS) $< /Fo$@
 
 bin\yafs.exe : bin\command_line_parser.obj bin\fat_device.obj bin\fat_elements.obj bin\file_io.obj bin\main.obj bin\unicode.obj bin\utils.obj bin\version.obj bin\xercesc.obj
-	link $** /OUT:$@ xerces-c_2.lib /NOLOGO /SUBSYSTEM:CONSOLE /CLRLOADEROPTIMIZATION:MD /LIBPATH:"C:\Users\Luis\Desktop\xerces-c_2_8_0-x86-windows-vc_8_0\lib"
+	link $** /OUT:$@ xerces-c_2.lib /NOLOGO /SUBSYSTEM:CONSOLE /CLRLOADEROPTIMIZATION:MD /LIBPATH:"D:\Librarys\xerces-c_2_8_0-x86-windows-vc_8_0\lib"
 
 bin\command_line_parser.obj : Makefile_msvc command_line_parser.cpp command_line_parser.h
 

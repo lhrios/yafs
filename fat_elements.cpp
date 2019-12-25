@@ -38,6 +38,8 @@
 using namespace std;
 XERCES_CPP_NAMESPACE_USE
 
+const string xsd_file_name("fat_file_system_tree.xsd");
+
 stringstream* PrintTabs(stringstream *buffer , uint32 n_tabs){
 	for( ; n_tabs > 0 ; n_tabs--)
 		(*buffer) << '\t';
@@ -182,6 +184,7 @@ FATElement::FATElement(const DirectoryEntryStructure *de ,
 	short_name = GetShortName(de);
 	order = 0;
 	reordered = false;
+	attributes = de->DIR_Attr;
 }
 
 uint8* FATElement::GetShortName(const DirectoryEntryStructure *de){
@@ -213,7 +216,12 @@ uint8* FATElement::GetShortName(const DirectoryEntryStructure *de){
 string FATFile::ToXML(uint32 n_tabs){
 	stringstream buffer;
 
-	(*PrintTabs(&buffer , n_tabs)) << "<file order=\"" << order << "\">" << endl;
+	(*PrintTabs(&buffer , n_tabs)) << "<file order=\"" << order << "\"";
+	if (HasVolumeIDAttribute()) {
+		buffer << " volume=\"true\"";
+	}
+	buffer << ">" << endl;
+
 	if(long_name)
 		(*PrintTabs(&buffer , n_tabs + 1)) << "<long_name>" << long_name << "</long_name>" << endl;
 	(*PrintTabs(&buffer , n_tabs + 1)) << "<short_name>";
@@ -284,8 +292,8 @@ string RootDirectory::ToXML(){
 
 	buffer << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << endl <<
 		"<root xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
-		"xsi:noNamespaceSchemaLocation=\"" << WorkingDirectoryUtils::GetWorkingDirectory() <<
-		"fat_file_system_tree.dtd\">" << endl;
+		"xsi:noNamespaceSchemaLocation=\"" << ExecutableDirectoryUtils::GetExecutableDirectoryURIUFT8() <<
+		xsd_file_name << "\">" << endl;
 	for(i = 0 ; i < content.size() ; i++){
 		buffer << content[i]->ToXML(1);
 	}
@@ -464,7 +472,7 @@ void FATDirectory::ReorderFATDirectory(DOMElement* directory_element){
 }
 
 void RootDirectory::ImportNewOrder(const char* xml_file){
-	Xercesc::InitializeXercesc();
+	Xercesc::Initialize();
 
 	try{
 		auto_ptr<XercesDOMParser> parser(new XercesDOMParser());
@@ -481,7 +489,8 @@ void RootDirectory::ImportNewOrder(const char* xml_file){
 		parser->setDoNamespaces(true);
 		parser->setDoSchema(true);
 		parser->setValidationSchemaFullChecking(true);
-	   parser->setExternalNoNamespaceSchemaLocation((WorkingDirectoryUtils::GetWorkingDirectory() + "fat_file_system_tree.xsd").c_str());
+		parser->setValidationConstraintFatal(true);
+		parser->setExternalNoNamespaceSchemaLocation((ExecutableDirectoryUtils::GetExecutableDirectoryNativeEncoding() + xsd_file_name).c_str());
 		parser->setIncludeIgnorableWhitespace(false);
 		parser->setCreateCommentNodes(false);
 
@@ -527,14 +536,14 @@ void RootDirectory::ImportNewOrder(const char* xml_file){
 		char *message_buffer = XMLString::transcode(dom_exception.getMessage());
 		string message(message_buffer);
 		XMLString::release(&message_buffer);
-		Xercesc::TerminateXercesc();
+		Xercesc::Terminate();
 		throw RootDirectoryException(message);
 	}catch(RootDirectoryException root_directory_exception){
-		Xercesc::TerminateXercesc();
+		Xercesc::Terminate();
 		throw root_directory_exception;
 	}
 
-	Xercesc::TerminateXercesc();
+	Xercesc::Terminate();
 }
 
 void RootDirectory::Sort(){

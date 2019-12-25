@@ -28,15 +28,26 @@
 
 	#include <iostream>
 	#include <string>
-	#include <vector>
 	using namespace std;
 
-	class WorkingDirectoryUtils {
+	class ExecutableDirectoryUtils {
 		public:
-			static string GetWorkingDirectory();
+			static void Initialize(char* command_line_executable_path);
+			static inline string GetExecutableDirectoryURIUFT8(){
+				return executable_directory_uri_utf8;
+			}
+
+			static inline string GetExecutableDirectoryUFT8(){
+				return executable_directory_utf8;
+			}
+
+			static inline string GetExecutableDirectoryNativeEncoding(){
+				return executable_directory_native_encoding;
+			}
 		private:
-			static string working_directory;
-			static bool working_directory_was_loaded;
+			static string executable_directory_uri_utf8;
+			static string executable_directory_utf8;
+			static string executable_directory_native_encoding;			
 	};
 
 	class LogUtils {

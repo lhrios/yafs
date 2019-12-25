@@ -21,4 +21,4 @@
 
 using std::string;
 
-const string Version::VERSION = "2013_12_01";
+const string Version::VERSION = "2014_08_03";

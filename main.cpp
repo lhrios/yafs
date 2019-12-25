@@ -22,6 +22,7 @@
 #include "command_line_parser.h"
 #include "exception.h"
 #include "fat_device.h"
+#include "utils.h"
 #include "version.h"
 
 #include <cassert>
@@ -73,6 +74,8 @@ int main(int argc , char **argv){
 
 	cout << "YAFS (Yet Another FAT Sorter) - version " << Version::VERSION << endl;
 
+	ExecutableDirectoryUtils::Initialize(argv[0]);
+	
 	/* Parse the command line. */
 	{
 		CommandLineParser commandLineParser(argc , argv , string("d:?f:?r?w?i?h?v?").c_str());

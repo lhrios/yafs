@@ -31,7 +31,7 @@ XERCES_CPP_NAMESPACE_USE
 bool Xercesc::xerces_was_initialized = false;
 XMLTranscoder *Xercesc::xml_transcoder_utf8 = NULL;
 
-void Xercesc::InitializeXercesc(){
+void Xercesc::Initialize(){
 	if(xerces_was_initialized) return;
 	try{
 		XMLTransService::Codes res_value;
@@ -48,7 +48,7 @@ void Xercesc::InitializeXercesc(){
 	}
 }
 
-void Xercesc::TerminateXercesc(){
+void Xercesc::Terminate(){
 	assert(xerces_was_initialized);
 	try{
 		delete xml_transcoder_utf8;
@@ -76,4 +76,20 @@ uint8* Xercesc::TranscodeToUTF8(const XMLCh *string){
 	string_utf8[size] = '\0';
 
 	return string_utf8;
+}
+
+XMLCh* Xercesc::TranscodeFromUTF8(const uint8 *string){
+	const uint32 buffer_length = 4096;
+	XMLCh *string_xmlch , buffer[buffer_length];
+	uint8 charSizes[buffer_length];
+	uint32 size , characters_processed , length;
+
+	length = strlen((const char*)string);
+	size = xml_transcoder_utf8->transcodeFrom((XMLByte*)string , length , buffer ,
+		buffer_length , characters_processed , charSizes);
+	assert(characters_processed <= length);
+	string_xmlch = new XMLCh[size + 1];
+	memcpy(string_xmlch , buffer , (size + 1) * sizeof(XMLCh));
+
+	return string_xmlch;
 }

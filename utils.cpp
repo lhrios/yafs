@@ -19,41 +19,102 @@
 
 #include "types.h"
 #include "utils.h"
+#include "unicode.h"
 
-#include <vector>
+#include <algorithm>
+#include <cstring>
 
 #ifndef _MSC_VER
 	#include <unistd.h>
 #else
+	#include <cstring>
 	#define WIN32_LEAN_AND_MEAN
 	#include "windows.h"
 	#undef WIN32_LEAN_AND_MEAN
 #endif
 
-string WorkingDirectoryUtils::working_directory;
-bool WorkingDirectoryUtils::working_directory_was_loaded = false;
-
-string WorkingDirectoryUtils::GetWorkingDirectory(){
-	if(!working_directory_was_loaded){
-		uint8 buffer[4096];
-
-		/* GCC. */
-		#ifdef __GNUC__
-			getcwd((char*) buffer , 4096);
-		/* Microsoft Compiler. */
-		#elif _MSC_VER
-			GetCurrentDirectory(4096, LPTSTR(buffer));
-		#endif
-
-		working_directory_was_loaded = true;
-		#ifdef WIN_SYSTEM
-			working_directory = string((char*)buffer) + "\\";
-		#elif UNIX_SYSTEM
-			working_directory = string((char*)buffer) + "/";
-		#endif
-
-	}
-	return working_directory;
-}
+string ExecutableDirectoryUtils::executable_directory_uri_utf8;
+string ExecutableDirectoryUtils::executable_directory_utf8;
+string ExecutableDirectoryUtils::executable_directory_native_encoding;			
 
 bool LogUtils::enabled = false;
+
+void ExecutableDirectoryUtils::Initialize(char* command_line_executable_path){
+	#ifdef WIN_SYSTEM
+		char executable_path_ansi[4096];
+		GetModuleFileNameA(NULL, executable_path_ansi, sizeof(executable_path_ansi));	
+		
+		wchar_t executable_path_unicode[4096];
+		GetModuleFileNameW(NULL, executable_path_unicode, sizeof(executable_path_unicode));				
+		
+		/* Removes the executable name. */
+		int len = strlen(executable_path_ansi);
+		int i;
+		for (i = len - 1; i >= 0; i--) {
+			if (executable_path_ansi[i] == '\\') break;
+		}
+		if (i > -1) {
+			executable_path_ansi[i + 1] = '\0';				
+		}
+
+		len = wcslen(executable_path_unicode);
+		for (i = len - 1; i >= 0; i--) {
+			if (executable_path_unicode[i] == '\\') break;
+		}
+		if (i >= -1) {
+			executable_path_unicode[i + 1] = '\0';				
+		}
+
+		executable_directory_native_encoding = string(executable_path_ansi);
+		
+		char* executable_path_utf8 = Unicode::ConvertFromUTF16ToUTF8(executable_path_unicode);
+		executable_directory_utf8 = string((char*)executable_path_utf8);
+		delete[] executable_path_utf8;
+		
+		executable_directory_uri_utf8 = string("file://") + string("/") + executable_directory_utf8;
+		std::replace(executable_directory_uri_utf8.begin(), executable_directory_uri_utf8.end(), '\\', '/');
+	#elif UNIX_SYSTEM
+		char working_directory[4096];
+		working_directory[0] = '\0';
+
+		getcwd(working_directory, sizeof(working_directory));
+		size_t working_directory_length = strlen(working_directory);	
+		if (working_directory[working_directory_length - 1] != '/') {
+			working_directory[working_directory_length++] = '/';
+		}
+		
+		if (command_line_executable_path != NULL) {	  
+			size_t command_line_executable_path_length = strlen(command_line_executable_path);
+
+			/* Removes the executable name. */
+			int i;
+			for (i = command_line_executable_path_length - 1; i >= 0; i--) {
+				if (command_line_executable_path[i] == '/') break;
+			}
+			if (i > -1) {
+				command_line_executable_path[i + 1] = '\0';
+				command_line_executable_path_length = i + 1;
+			}			
+			
+			/* Is it not absolute? */
+			if (command_line_executable_path[0] != '/') {
+				memcpy(working_directory + working_directory_length, command_line_executable_path, command_line_executable_path_length + 1);
+				working_directory_length += command_line_executable_path_length;
+
+			} else {
+				memcpy(working_directory, command_line_executable_path, command_line_executable_path_length + 1);
+				working_directory_length = command_line_executable_path_length;
+			}
+		}
+
+		/* Assumes it is using UFT-8. */		
+		executable_directory_utf8 = string(working_directory);
+
+		if (executable_directory_utf8[executable_directory_utf8.length() - 1] != '/'){
+			executable_directory_utf8 += "/";
+		}
+
+		executable_directory_uri_utf8 = string("file://") + executable_directory_utf8;
+		executable_directory_native_encoding = executable_directory_utf8;
+	#endif
+}
