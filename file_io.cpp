@@ -161,7 +161,7 @@ uint32 FileIO::ReadInternal(void* buffer , uint32 count){
 	/* Unix. */
 	#elif UNIX_SYSTEM
 		ssize_t aux = read(file , buffer , count);
-		if(aux == (ssize_t)-1 || aux != count)
+		if(aux == (ssize_t)-1 || aux != (ssize_t)count)
 			throwIOExceptionWithErrorCode("Error while reading the file.");
 		bytes_read = aux;
    #endif
@@ -197,7 +197,7 @@ uint32 FileIO::WriteInternal(const void* buffer , uint32 count){
 		#elif UNIX_SYSTEM
 			ssize_t aux;
 			aux = write(file , buffer , count);
-			if(aux == (ssize_t)-1 || aux != count)
+			if(aux == (ssize_t)-1 || aux != (ssize_t)count)
 				throwIOExceptionWithErrorCode("Error while writing in the file.");
 			bytes_written = aux;
 		#endif
@@ -244,11 +244,40 @@ void FileIO::throwIOExceptionWithErrorCode(string message) {
 
 	/* Windows. */
 	#ifdef WIN_SYSTEM
-		sstream << message << " Error code: " << GetLastError() << ".";
+		DWORD last_error = GetLastError();
+		LPSTR buffer = NULL;
+
+		size_t size = FormatMessageA(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS
+			, NULL , last_error , MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPSTR)&buffer, 0, NULL);
+
+		if (size) {
+			sstream << message << " " << buffer;
+			LocalFree(buffer);
+
+		} else {
+			sstream << message << " Error code: " << GetLastError() << ".";
+		}
 
 	/* Unix. */
 	#elif UNIX_SYSTEM
-		sstream << message << " Error code: " << errno << ".";
+		int errno_copy = errno;
+		char *system_message = NULL;
+		char buffer[1024];
+
+		#if (_POSIX_C_SOURCE >= 200112L || __DARWIN_C_LEVEL >= 200112L || _XOPEN_SOURCE >= 600) && ! _GNU_SOURCE
+			if (strerror_r(errno_copy , buffer, sizeof(buffer)) == 0) {
+				system_message = buffer;
+			}
+		#else
+			system_message = strerror_r(errno_copy , buffer, sizeof(buffer));
+		#endif
+
+		if (system_message) {
+			sstream << message << " " << system_message << ".";
+
+		} else {
+			sstream << message << " Error code: " << errno_copy << ".";
+		}
    #endif
 
 	throw FileIOException(sstream.str());
