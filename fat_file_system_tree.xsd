@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+	<xs:element name="file">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="long_name" type="xs:string" minOccurs="0"/>
+				<xs:element name="short_name" type="xs:string"/>
+			</xs:sequence>
+			<xs:attribute name="order" use="required">
+				<xs:simpleType>
+					<xs:restriction base="xs:integer">
+						<xs:minInclusive value="0"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="directory">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="long_name" type="xs:string" minOccurs="0"/>
+				<xs:element name="short_name" type="xs:string"/>
+				<xs:choice minOccurs="0" maxOccurs="unbounded">
+					<xs:element ref="file"></xs:element>
+					<xs:element ref="directory"></xs:element>
+				</xs:choice>
+			</xs:sequence>
+			<xs:attribute name="order" use="required">
+				<xs:simpleType>
+					<xs:restriction base="xs:integer">
+						<xs:minInclusive value="0"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="root">
+		<xs:complexType>
+			<xs:choice minOccurs="0" maxOccurs="unbounded">
+				<xs:element ref="file"></xs:element>
+				<xs:element ref="directory"></xs:element>
+			</xs:choice>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

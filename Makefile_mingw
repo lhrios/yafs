@@ -1,0 +1,42 @@
+#SHELL = bash.exe
+CXX = g++
+# CPPFLAGS = -DNDEBUG
+CPPFLAGS = -DWIN_SYSTEM -I/c/MinGW/xerces-c-src_2_8_0/include/ -L/c/MinGW/xerces-c-src_2_8_0/lib/
+CFLAGS = -Wall -g1 -O2
+LFLAGS = -lxerces-c
+
+bin_path = bin
+VPATH = $(bin_path)
+
+yafs.exe : command_line_parser.o fat_device.o fat_elements.o file_io.o main.o unicode.o utils.o xercesc.o
+	$(CXX) $(CFLAGS) $(CPPFLAGS) $(?:%.o=$(bin_path)/%.o) $(LFLAGS) -o $(bin_path)/$@
+	#strip $(bin_path)/$@
+
+clean :
+	rm -f $(bin_path)/*.o $(bin_path)/*.exe
+
+%.o : %.cpp
+	$(CXX) -c $(CFLAGS) $(CPPFLAGS) $< -o $(bin_path)/$@
+
+command_line_parser.o : Makefile_mingw command_line_parser.cpp command_line_parser.h
+
+fat_device.o : Makefile_mingw fat_device.cpp array_auto_ptr.h fat_device.h exception.h \
+ fat.h pack.h types.h fat_device_type.h fat_elements.h string_compare.h \
+ file_io.h
+
+fat_elements.o : Makefile_mingw fat_elements.cpp fat.h pack.h types.h fat_elements.h \
+ fat_device_type.h exception.h string_compare.h unicode.h utils.h \
+ xercesc.h
+
+file_io.o : Makefile_mingw file_io.cpp file_io.h exception.h types.h utils.h
+
+main.o : Makefile_mingw main.cpp command_line_parser.h exception.h fat_device.h fat.h \
+ pack.h types.h fat_device_type.h fat_elements.h string_compare.h \
+ file_io.h utils.h
+
+unicode.o : Makefile_mingw unicode.cpp types.h unicode.h exception.h
+
+utils.o : Makefile_mingw utils.cpp types.h utils.h
+
+xercesc.o : Makefile_mingw xercesc.cpp xercesc.h exception.h types.h
+

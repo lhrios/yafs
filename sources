@@ -1,0 +1,1 @@
+sources = command_line_parser.cpp fat_device.cpp fat_elements.cpp file_io.cpp main.cpp unicode.cpp utils.cpp xercesc.cpp

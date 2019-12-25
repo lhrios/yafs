@@ -1,0 +1,32 @@
+CPPFLAGS=/c /EHsc /nologo /W4 /DWIN_SYSTEM /I"C:\Users\Luis\Desktop\xerces-c_2_8_0-x86-windows-vc_8_0\include"
+
+.cpp{bin\}.obj:
+	$(CPP) $(CPPFLAGS) $< /Fo$@
+
+bin\yafs.exe : bin\command_line_parser.obj bin\fat_device.obj bin\fat_elements.obj bin\file_io.obj bin\main.obj bin\unicode.obj bin\utils.obj bin\xercesc.obj
+	link $** /OUT:$@ xerces-c_2.lib /NOLOGO /SUBSYSTEM:CONSOLE /CLRLOADEROPTIMIZATION:MD /LIBPATH:"C:\Users\Luis\Desktop\xerces-c_2_8_0-x86-windows-vc_8_0\lib"
+
+bin\command_line_parser.obj : Makefile_msvc command_line_parser.cpp command_line_parser.h
+
+bin\fat_device.obj : Makefile_msvc fat_device.cpp array_auto_ptr.h fat_device.h exception.h \
+ fat.h pack.h types.h fat_device_type.h fat_elements.h string_compare.h \
+ file_io.h
+
+bin\fat_elements.obj : Makefile_msvc fat_elements.cpp fat.h pack.h types.h fat_elements.h \
+ fat_device_type.h exception.h string_compare.h unicode.h utils.h \
+ xercesc.h
+
+bin\file_io.obj : Makefile_msvc file_io.cpp file_io.h exception.h types.h utils.h
+
+bin\main.obj : Makefile_msvc main.cpp command_line_parser.h exception.h fat_device.h fat.h \
+ pack.h types.h fat_device_type.h fat_elements.h string_compare.h \
+ file_io.h utils.h
+
+bin\unicode.obj : Makefile_msvc unicode.cpp types.h unicode.h exception.h
+
+bin\utils.obj : Makefile_msvc utils.cpp types.h utils.h
+
+bin\xercesc.obj : Makefile_msvc xercesc.cpp xercesc.h exception.h types.h
+
+clean :
+	del bin\*.obj bin\*.exe

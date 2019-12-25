@@ -1,0 +1,40 @@
+SHELL = bash
+CXX = g++
+# CPPFLAGS = -DNDEBUG
+CPPFLAGS = -DUNIX_SYSTEM
+CFLAGS = -Wall -g1 -O2
+LFLAGS = -lxerces-c
+
+bin_path = bin
+dep_path = dep
+VPATH = $(dep_path) $(bin_path)
+
+executable = yafs
+-include sources
+objects = $(sources:%.cpp=%.o)
+objects_with_path = $(sources:%.cpp=$(bin_path)/%.o)
+dependences = $(sources:%.cpp=%.d)
+dependences_with_path = $(sources:%.cpp=$(dep_path)/%.d)
+
+$(executable) : $(dependences) $(objects)
+	$(CXX) $(CFLAGS) $(CPPFLAGS) $(objects_with_path) $(LFLAGS) -o $(bin_path)/$(executable)
+#	strip $(executable)
+
+.PHONY : Makefile.nmake
+Makefile.nmake : $(dependences_with_path)
+	rm -rf "$@"
+	for c in "$?"; do cat $$c >> "$@"; done;
+
+clean :
+	rm -f $(dependences_with_path) $(objects_with_path) $(bin_path)/$(executable)
+
+-include $(dependences_with_path)
+
+%.o : %.cpp
+	$(CXX) -c $(CFLAGS) $(CPPFLAGS) $< -o $(bin_path)/$@
+
+$(dep_path)/%.d : %.cpp
+	@rm -f $@.tmp
+	@$(CXX) -MM $(CPPFLAGS) $< > $@.tmp
+	@sed 's,\($*\)\.o[ :]*,\1.o $@ : Makefile_unix ,g' < $@.tmp > $@
+	@rm -f $@.tmp
