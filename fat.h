@@ -21,8 +21,8 @@
  * FAT Modules: defines FAT file system structures.
  */
 
-#ifndef __FAT_H
-#define __FAT_H
+#ifndef YAFS_FAT_H
+	#define YAFS_FAT_H
 
 	#include "pack.h"
 	#include "types.h"

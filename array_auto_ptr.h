@@ -21,8 +21,8 @@
  * Array Auto Pointer Module: implements a very simple auto_ptr for arrays.
  */
 
-#ifndef __ARRAY_AUTO_PTR_H
-#define __ARRAY_AUTO_PTR_H
+#ifndef YAFS_ARRAY_AUTO_PTR_H
+	#define YAFS_ARRAY_AUTO_PTR_H
 
 	#include <cstdlib>
 

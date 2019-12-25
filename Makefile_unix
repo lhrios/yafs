@@ -1,8 +1,8 @@
 SHELL = bash
 CXX = g++
 CPPFLAGS = -DUNIX_SYSTEM
-CFLAGS = -Wall -g1 -O1 -m32 -march=i686
-LFLAGS = -Wl,-Bstatic -lxerces-c -lxerces-depdom -Wl,-Bdynamic -lc -lpthread -L/home/luis/projetos/yafs/private/xerces-c-src_2_8_0/lib
+CFLAGS = -Wall -g1 -O1 -m32 -march=i686 -I/home/luis/programacao/projetos/projects_on_git/yafs/private/xerces-c-src_2_8_0/include
+LFLAGS = -Wl,-Bstatic -l:libxerces-c.a -l:libxerces-depdom.a -Wl,-Bdynamic -lc -lpthread -L/home/luis/programacao/projetos/projects_on_git/yafs/private/xerces-c-src_2_8_0/lib
 
 
 bin_path = bin
@@ -24,7 +24,7 @@ Makefile.nmake : $(dependences_with_path)
 	rm -rf "$@"
 	for c in "$?"; do cat $$c >> "$@"; done;
 
-clean :
+.PHONY clean :
 	rm -f $(dependences_with_path) $(objects_with_path) $(bin_path)/$(executable)
 
 -include $(dependences_with_path)

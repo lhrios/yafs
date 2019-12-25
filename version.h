@@ -17,8 +17,8 @@
  * along with YAFS.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __VERSION_H
-	#define __VERSION_H
+#ifndef YAFS_VERSION_H
+	#define YAFS_VERSION_H
 
 	#include <string>
 
@@ -26,4 +26,5 @@
 		public:
 			const static std::string VERSION;
 	};
+
 #endif

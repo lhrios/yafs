@@ -21,8 +21,8 @@
  * String Compare Module:
  */
 
-#ifndef __STRING_COMPARE_H
-#define __STRING_COMPARE_H
+#ifndef YAFS_STRING_COMPARE_H
+	#define YAFS_STRING_COMPARE_H
 
 	#include <cstring>
 

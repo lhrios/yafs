@@ -21,8 +21,8 @@
  * Xercesc Module: groups some functions related with the Xercesc library.
  */
 
-#ifndef __XERCESC_H
-#define __XERCESC_H
+#ifndef YAFS_XERCESC_H
+    #define YAFS_XERCESC_H
 
 	#include "exception.h"
 	#include "types.h"
@@ -45,6 +45,5 @@
 			static XMLTranscoder *xml_transcoder_utf8;
 			static bool xerces_was_initialized;
 	};
-
 
 #endif

@@ -17,8 +17,8 @@
  * along with YAFS.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __PACK_H
-	#define __PACK_H
+#ifndef YAFS_PACK_H
+	#define YAFS_PACK_H
 
 	/* Windows. */
 	#ifdef WIN_SYSTEM

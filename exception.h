@@ -21,8 +21,8 @@
  * Exception Module: defines an exception class.
  */
 
-#ifndef __EXCEPTION_H
-#define __EXCEPTION_H
+#ifndef YAFS_EXCEPTION_H
+	#define YAFS_EXCEPTION_H
 
 	#include <iostream>
 	#include <string>

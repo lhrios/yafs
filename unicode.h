@@ -21,8 +21,8 @@
  * Unicode Module: defines some functions to deal with unicode encodings.
  */
 
-#ifndef __UNICODE_H
-#define __UNICODE_H
+#ifndef YAFS_UNICODE_H
+	#define YAFS_UNICODE_H
 
 	#include "exception.h"
 	#include "types.h"

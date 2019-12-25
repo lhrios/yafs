@@ -21,8 +21,8 @@
  * Command Line Parser Module: defines a very simple parser to extract command line options and arguments.
  */
 
-#ifndef COMMAND_LINE_PARSER
-	#define COMMAND_LINE_PARSER
+#ifndef YAFS_COMMAND_LINE_PARSER
+	#define YAFS_COMMAND_LINE_PARSER
 
 	#include <map>
 	#include <cstring>

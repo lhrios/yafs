@@ -21,8 +21,8 @@
  * Util Module: groups some unrelated important functions.
  */
 
-#ifndef __UTIL_MODULE_H
-#define __UTIL_MODULE_H
+#ifndef YAFS_UTIL_MODULE_H
+	#define YAFS_UTIL_MODULE_H
 
 	#include "types.h"
 

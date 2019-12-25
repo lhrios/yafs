@@ -21,8 +21,8 @@
  * FAT Device Module: deals with FAT Devices writing and reading the file system.
  */
 
-#ifndef __FAT_DEVICE_H
-#define __FAT_DEVICE_H
+#ifndef YAFS_FAT_DEVICE_H
+	#define YAFS_FAT_DEVICE_H
 
 	#include "exception.h"
 	#include "fat.h"

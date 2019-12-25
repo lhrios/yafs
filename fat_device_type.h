@@ -21,8 +21,8 @@
  * FAT Device Type Module: declares the FAT Device type.
  */
 
-#ifndef __FAT_DEVICE_TYPE_H
-#define __FAT_DEVICE_TYPE_H
+#ifndef YAFS_FAT_DEVICE_TYPE_H
+	#define YAFS_FAT_DEVICE_TYPE_H
 
 	class FATDevice;
 

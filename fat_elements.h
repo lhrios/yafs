@@ -21,8 +21,8 @@
  * FAT Elements Module: represents the FAT file system elements.
  */
 
-#ifndef __FAT_ELEMENTS_H
-#define __FAT_ELEMENTS_H
+#ifndef YAFS_FAT_ELEMENTS_H
+	#define YAFS_FAT_ELEMENTS_H
 
 	#include "fat.h"
 	#include "fat_device_type.h"

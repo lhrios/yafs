@@ -21,8 +21,8 @@
  * Types Module: defines some types that will be useful.
  */
 
-#ifndef __TYPES_H
-#define __TYPES_H
+#ifndef YAFS_TYPES_H
+	#define YAFS_TYPES_H
 
    typedef unsigned char uint8;
    typedef unsigned short int uint16;

@@ -21,8 +21,8 @@
  * I/O Module: defines some functions to do I/O using files.
  */
 
-#ifndef __IO_H
-#define __IO_H
+#ifndef YAFS_IO_H
+	#define YAFS_IO_H
 
 	#include "exception.h"
 	#include "types.h"
