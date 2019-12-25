@@ -110,7 +110,11 @@ FileIO::FileIO(const char* path , const char* mode , bool lock){
 			this->mode = READ_MODE | WRITE_MODE;
 		}else throw FileIOException("The second parameter is invalid.");
 
-      file = open(path , flags , S_IRUSR | S_IWUSR | O_LARGEFILE);
+		#ifdef __linux__
+			file = open(path , flags , S_IRUSR | S_IWUSR | O_LARGEFILE);
+		#else
+			file = open(path , flags , S_IRUSR | S_IWUSR);
+		#endif
       if(file == -1) throwIOExceptionWithErrorCode(string("Error while opening the file \"") + path + "\".");
 
    #endif
@@ -213,19 +217,25 @@ uint32 FileIO::Write(const void *buffer , uint32 count , uint64 offset){
 	return WriteInternal(buffer , count);
 }
 
-void FileIO::SeekInternal(int64 offset , uint32 mode){
+void FileIO::SeekInternal(uint64 offset , uint32 mode){
 	/* Windows. */
 	#ifdef WIN_SYSTEM
       LARGE_INTEGER li_offset , aux;
 
-      li_offset.QuadPart = offset;
+      li_offset.QuadPart = (LONGLONG)offset;
       if(!SetFilePointerEx((HANDLE)file , li_offset , &aux , mode ))
 			throwIOExceptionWithErrorCode("Error while seeking the file.");
 	/* Unix. */
 	#elif UNIX_SYSTEM
-		off64_t aux;
-		if((aux = lseek64(file , offset , mode)) == (off64_t)-1)
-			throwIOExceptionWithErrorCode("Error while seeking the file.");
+		#ifdef __linux__
+			off64_t aux;
+			if((aux = lseek64(file , (off64_t)offset , mode)) == (off64_t)-1)
+				throwIOExceptionWithErrorCode("Error while seeking the file.");
+		#else
+			off_t aux;
+			if((aux = lseek(file , (off_t)offset , mode)) == (off_t)-1)
+				throwIOExceptionWithErrorCode("Error while seeking the file.");
+		#endif
    #endif
 }
 

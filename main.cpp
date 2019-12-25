@@ -22,6 +22,7 @@
 #include "command_line_parser.h"
 #include "exception.h"
 #include "fat_device.h"
+#include "version.h"
 
 #include <cassert>
 #include <cstring>
@@ -69,6 +70,8 @@ void PrintErrorMessage(){
 int main(int argc , char **argv){
 	char *device_path = NULL, *io_file_path = NULL;
 	OperationMode operation_mode = INVALID_MODE;
+
+	cout << "YAFS (Yet Another FAT Sorter) - version " << Version::VERSION << endl;
 
 	/* Parse the command line. */
 	{

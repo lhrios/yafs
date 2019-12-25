@@ -1,5 +1,6 @@
 SHELL = bash
 CXX = g++
+# CXX = g++ -m32 -march=i486 -L/opt/xerces-c_2_8_0-x86-linux-gcc_3_4/lib/
 # CPPFLAGS = -DNDEBUG
 CPPFLAGS = -DUNIX_SYSTEM
 CFLAGS = -Wall -g1 -O2

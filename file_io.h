@@ -77,8 +77,7 @@
 
 			uint32 ReadInternal(void* buffer , uint32 count);
 			uint32 WriteInternal(const void* buffer , uint32 count);
-			//TODO: tem q ser uint64?
-			void SeekInternal(int64 offset , uint32 mode);
+			void SeekInternal(uint64 offset , uint32 mode);
 
 			void throwIOExceptionWithErrorCode(string message);
 
