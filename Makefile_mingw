@@ -20,7 +20,7 @@ clean :
 
 command_line_parser.o : Makefile_mingw command_line_parser.cpp command_line_parser.h
 
-fat_device.o : Makefile_mingw fat_device.cpp array_auto_ptr.h fat_device.h exception.h \
+fat_device.o : Makefile_mingw fat_device.cpp fat_device.h exception.h \
  fat.h pack.h types.h fat_device_type.h fat_elements.h string_compare.h \
  file_io.h
 

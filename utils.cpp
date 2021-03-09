@@ -25,6 +25,7 @@
 #include <cstring>
 
 #ifndef _MSC_VER
+	#include <error.h>
 	#include <unistd.h>
 #else
 	#include <cstring>
@@ -48,21 +49,21 @@ void ExecutableDirectoryUtils::Initialize(char* command_line_executable_path){
 		GetModuleFileNameW(NULL, executable_path_unicode, sizeof(executable_path_unicode));				
 		
 		/* Removes the executable name. */
-		int len = strlen(executable_path_ansi);
+		int len = (int) strlen(executable_path_ansi);
 		int i;
 		for (i = len - 1; i >= 0; i--) {
 			if (executable_path_ansi[i] == '\\') break;
 		}
 		if (i > -1) {
-			executable_path_ansi[i + 1] = '\0';				
+			executable_path_ansi[i + 1] = '\0';
 		}
 
-		len = wcslen(executable_path_unicode);
+		len = (int) wcslen(executable_path_unicode);
 		for (i = len - 1; i >= 0; i--) {
 			if (executable_path_unicode[i] == '\\') break;
 		}
 		if (i >= -1) {
-			executable_path_unicode[i + 1] = '\0';				
+			executable_path_unicode[i + 1] = '\0';
 		}
 
 		executable_directory_native_encoding = string(executable_path_ansi);
@@ -77,7 +78,10 @@ void ExecutableDirectoryUtils::Initialize(char* command_line_executable_path){
 		char working_directory[4096];
 		working_directory[0] = '\0';
 
-		getcwd(working_directory, sizeof(working_directory));
+		char* result = getcwd(working_directory, sizeof(working_directory));
+		if (result == NULL) {
+			error(EXIT_FAILURE, errno, "failed after executing getcwd");
+		}
 		size_t working_directory_length = strlen(working_directory);	
 		if (working_directory[working_directory_length - 1] != '/') {
 			working_directory[working_directory_length++] = '/';

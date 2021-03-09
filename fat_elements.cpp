@@ -142,12 +142,12 @@ FATElement::FATElement(const DirectoryEntryStructure *de ,
 	GenericEntry ge;
 
 	if(lde.size() > 0){
-		int i , j;
-		uint32 long_name_length;
+		int i, j;
+		size_t long_name_length;
 		vector<uint16> long_name_utf16;
 		vector<uint8> long_name_utf8;
 
-		for(i = lde.size() - 1 ; i >= 0 ; i--){
+		for(i = (int) lde.size() - 1 ; i >= 0 ; i--){
 			for(j = 0 ; j < 5 ; j++)
 				InsertUTF16Char(lde[i].LDIR_Name1[j] , long_name_utf16);
 			for(j = 0 ; j < 6 ; j++)
@@ -262,7 +262,7 @@ string FATDirectory::ToXML(uint32 n_tabs){
 }
 
 void FATDirectory::InsertFATElement(FATElement *fat_element){
-	fat_element->order = (content.size() + 1) * 100;
+	fat_element->order = (uint32) (content.size() + 1) * 100;
 	content.push_back(fat_element);
 	content_map.insert(make_pair((const char*)fat_element->short_name , fat_element));
 }
@@ -398,7 +398,7 @@ RootDirectory::~RootDirectory(){
 }
 
 void RootDirectory::InsertFATElement(FATElement *fat_element){
-	fat_element->order = (content.size() + 1) * 100;
+	fat_element->order = (uint32) (content.size() + 1) * 100;
 	content.push_back(fat_element);
 	content_map.insert(make_pair((const char*)fat_element->short_name , fat_element));
 }
@@ -475,7 +475,7 @@ void RootDirectory::ImportNewOrder(const char* xml_file){
 	Xercesc::Initialize();
 
 	try{
-		auto_ptr<XercesDOMParser> parser(new XercesDOMParser());
+		std::unique_ptr<XercesDOMParser> parser = std::unique_ptr<XercesDOMParser>(new XercesDOMParser());
 		DOMTreeErrorReporter dom_tree_error_reporter;
 		DOMElement *root;
 		DOMNode *child;

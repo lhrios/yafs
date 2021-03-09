@@ -31,7 +31,7 @@
 	#define DIR_ENTRY_END 0x00
 	#define DIR_ENTRY_EMPTY 0xE5
 
-	#define DIR_ENTRY_SIZE 32
+	#define DIR_ENTRY_SIZE 32U
 
 	#define ATTR_READ_ONLY 0x01
 	#define ATTR_HIDDEN 0x02

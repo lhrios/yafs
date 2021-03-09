@@ -24,13 +24,20 @@
 #ifndef YAFS_TYPES_H
 	#define YAFS_TYPES_H
 
-   typedef unsigned char uint8;
-   typedef unsigned short int uint16;
-   typedef unsigned int uint32 , uint;
-   typedef unsigned long long int uint64;
+	typedef unsigned char uint8;
+	static_assert(sizeof(uint8) == 1, "Expecting uint8 with 1 byte length");
+	
+	typedef unsigned short int uint16;
+	static_assert(sizeof(uint16) == 2, "Expecting uint16 with 2 byte length");
+		
+	typedef unsigned int uint32 , uint;
+	static_assert(sizeof(uint32) == 4, "Expecting uint32 with 4 byte length");
+	
+	typedef unsigned long long int uint64;
+	static_assert(sizeof(uint64) == 8, "Expecting uint64 with 8 byte length");
 
-   typedef char int8;
-   typedef short int int16;
-   typedef long long int int64;
+	typedef char int8;
+	typedef short int int16;
+	typedef long long int int64;
 
 #endif

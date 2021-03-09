@@ -1,8 +1,8 @@
 SHELL = bash
 CXX = g++
 CPPFLAGS = -DUNIX_SYSTEM
-CFLAGS = -Wall -g1 -O1 -m32 -march=i686 -I/home/luis/programacao/projetos/projects_on_git/yafs/private/xerces-c-src_2_8_0/include
-LFLAGS = -Wl,-Bstatic -l:libxerces-c.a -l:libxerces-depdom.a -Wl,-Bdynamic -lc -lpthread -L/home/luis/programacao/projetos/projects_on_git/yafs/private/xerces-c-src_2_8_0/lib
+CFLAGS = -std=c++11 -Wall -g1 -O2
+LFLAGS = -lxerces-c -lc -lpthread
 
 
 bin_path = bin

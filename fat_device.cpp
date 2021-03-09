@@ -17,13 +17,13 @@
  * along with YAFS.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "array_auto_ptr.h"
 #include "fat_device.h"
 #include "file_io.h"
 #include "types.h"
 
 #include <cassert>
 #include <cstring>
+#include <memory>
 #include <sstream>
 #include <string>
 using namespace std;
@@ -45,7 +45,7 @@ uint8 ComputeCheckSum(uint8 *name){
 }
 
 FATDevice::FATDevice(const char *path, const char *access_mode){
-	array_auto_ptr<uint8> sector_buffer(new uint8[4096]);
+	std::unique_ptr<uint8[]> sector_buffer = std::unique_ptr<uint8[]>(new uint8[4096]);
 	try{
 		device_file = new FileIO(path , access_mode, true);
 
@@ -261,8 +261,8 @@ void FATDevice::ReadDirectory(FATDirectory* fat_directory){
 	FATElement *fat_element;
 	GenericEntry *ge;
 	vector<LongDirectoryEntryStructure> lde;
-   array_auto_ptr<uint8> cluster_buffer(new uint8[cluster_size]);
-   uint32 current_cluster = 0;
+	std::unique_ptr<uint8[]> cluster_buffer = std::unique_ptr<uint8[]>(new uint8[cluster_size]);
+	uint32 current_cluster = 0;
 	uint32 i = 0 , total_entries = 0 , total_lde = 0;
 	uint8 current_sum = 0;
 
@@ -271,7 +271,7 @@ void FATDevice::ReadDirectory(FATDirectory* fat_directory){
 	if(IsLastCluster(current_cluster)) return;
 	ReadCluster(cluster_buffer.get() , current_cluster);
 	ge = (GenericEntry*) cluster_buffer.get();
-
+	
 	/* While there are more valid entries. */
 	while(ge[i].lde.LDIR_Ord != DIR_ENTRY_END){
 
@@ -290,7 +290,7 @@ void FATDevice::ReadDirectory(FATDirectory* fat_directory){
 
 				/* We are reading a LDE and we have not found the last LDE. */
 				}else if(reading_lde && !(ge[i].lde.LDIR_Ord & LAST_LONG_ENTRY) &&
-					(ge[i].lde.LDIR_Ord & 0xBF) == (total_lde - 1) &&
+					(ge[i].lde.LDIR_Ord & 0xBFU) == (total_lde - 1) &&
 					current_sum == ge[i].lde.LDIR_Chksum){
 					total_lde--;
 					lde.push_back(ge[i].lde);
@@ -348,9 +348,9 @@ RootDirectory* FATDevice::ReadDirectoriesTree(){
 	GenericEntry *ge;
 	RootDirectory* root_directory = new RootDirectory();
 	vector<LongDirectoryEntryStructure> lde;
-   array_auto_ptr<uint8> cluster_buffer(new uint8[cluster_size]);
-   uint32 current_cluster = 0; /* Used for FAT32. */
-   uint32 current_sector = 0; /* Used for FAT12 and FAT16. */
+	std::unique_ptr<uint8[]> cluster_buffer = std::unique_ptr<uint8[]>(new uint8[cluster_size]);
+	uint32 current_cluster = 0; /* Used for FAT32. */
+	uint32 current_sector = 0; /* Used for FAT12 and FAT16. */
 	uint32 i = 0 , total_entries = 0 , total_lde = 0;
 	uint8 current_sum = 0;
 
@@ -365,7 +365,7 @@ RootDirectory* FATDevice::ReadDirectoriesTree(){
 		ReadSector(cluster_buffer.get() , current_sector);
    }
 	ge = (GenericEntry*) cluster_buffer.get();
-
+	
 	/* While there are more valid entries. */
 	while(ge[i].lde.LDIR_Ord != DIR_ENTRY_END){
 
@@ -384,7 +384,7 @@ RootDirectory* FATDevice::ReadDirectoriesTree(){
 
 				/* We are reading a LDE and we have not found the last LDE. */
 				}else if(reading_lde && !(ge[i].lde.LDIR_Ord & LAST_LONG_ENTRY) &&
-					(ge[i].lde.LDIR_Ord & 0xBF) == (total_lde - 1) &&
+					(ge[i].lde.LDIR_Ord & 0xBFU) == (total_lde - 1) &&
 					current_sum == ge[i].lde.LDIR_Chksum){
 					total_lde--;
 					lde.push_back(ge[i].lde);
@@ -448,7 +448,7 @@ RootDirectory* FATDevice::ReadDirectoriesTree(){
 void FATDevice::WriteDirectory(FATDirectory* fat_directory){
 	FATElement *fat_element;
 	GenericEntry *ge;
-	array_auto_ptr<uint8> cluster_buffer(new uint8[cluster_size]);
+	std::unique_ptr<uint8[]> cluster_buffer = std::unique_ptr<uint8[]>(new uint8[cluster_size]);
    uint32 current_cluster = 0;
 	uint32 i = 0;
 
@@ -494,9 +494,9 @@ void FATDevice::WriteDirectory(FATDirectory* fat_directory){
 void FATDevice::WriteDirectoriesTree(RootDirectory* root_directory){
 	FATElement *fat_element;
 	GenericEntry *ge;
-	array_auto_ptr<uint8> cluster_buffer(new uint8[cluster_size]);
-   uint32 current_cluster = 0; /* Used for FAT32. */
-   uint32 current_sector = 0; /* Used for FAT12 and FAT16. */
+	std::unique_ptr<uint8[]> cluster_buffer = std::unique_ptr<uint8[]>(new uint8[cluster_size]);
+	uint32 current_cluster = 0; /* Used for FAT32. */
+	uint32 current_sector = 0; /* Used for FAT12 and FAT16. */
 	uint32 i = 0 , total_entries = 0;
 
 	/* FAT32. */

@@ -65,7 +65,8 @@ void Xercesc::Terminate(){
 uint8* Xercesc::TranscodeToUTF8(const XMLCh *string){
 	const uint32 buffer_length = 4096;
 	uint8* string_utf8 , buffer[buffer_length];
-	uint32 size , characters_processed , length;
+	size_t size, length;
+	XMLSize_t characters_processed;
 
 	length = XMLString::stringLen(string);
 	size = xml_transcoder_utf8->transcodeTo(string , length , (XMLByte*)buffer ,
@@ -82,7 +83,8 @@ XMLCh* Xercesc::TranscodeFromUTF8(const uint8 *string){
 	const uint32 buffer_length = 4096;
 	XMLCh *string_xmlch , buffer[buffer_length];
 	uint8 charSizes[buffer_length];
-	uint32 size , characters_processed , length;
+	size_t size, length;
+	XMLSize_t characters_processed;
 
 	length = strlen((const char*)string);
 	size = xml_transcoder_utf8->transcodeFrom((XMLByte*)string , length , buffer ,

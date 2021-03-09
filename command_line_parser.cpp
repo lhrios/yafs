@@ -90,7 +90,7 @@ void CommandLineParser::parse(int argc, char** argv, const char* rules) {
 
 	for (int i = 1; i < argc && valid; i++) {
 		char *option_str = argv[i];
-		int option_length = strlen(option_str);
+		size_t option_length = strlen(option_str);
 
 		if (option_length == 2 && option_str[0] == '-' && std::isalpha(option_str[1])
 			&& options.find(option_str[1]) != options.end()) {
