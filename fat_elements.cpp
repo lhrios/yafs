@@ -364,11 +364,6 @@ const XMLCh directory_utf16_str[] = {
 	chLatin_y ,
 	0x0
 };
-const XMLCh id_utf16_str[] = {
-	chLatin_i ,
-	chLatin_d ,
-	0x0
-};
 const XMLCh order_utf16_str[] = {
 	chLatin_o ,
 	chLatin_r ,

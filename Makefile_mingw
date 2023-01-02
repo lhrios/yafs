@@ -41,4 +41,3 @@ utils.o : Makefile_mingw utils.cpp types.h utils.h
 version.o : Makefile_mingw version.cpp version.h
 
 xercesc.o : Makefile_mingw xercesc.cpp xercesc.h exception.h types.h
-

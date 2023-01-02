@@ -23,12 +23,11 @@
 
 #include <algorithm>
 #include <cstring>
+#include <iostream>
 
 #ifndef _MSC_VER
-	#include <error.h>
 	#include <unistd.h>
 #else
-	#include <cstring>
 	#define WIN32_LEAN_AND_MEAN
 	#include "windows.h"
 	#undef WIN32_LEAN_AND_MEAN
@@ -39,6 +38,13 @@ string ExecutableDirectoryUtils::executable_directory_utf8;
 string ExecutableDirectoryUtils::executable_directory_native_encoding;			
 
 bool LogUtils::enabled = false;
+
+#ifdef UNIX_SYSTEM
+	void handleFatalError(int status, int errnum, const char* message) {
+		cerr << "yafs: " << message << endl;
+		exit(status);
+	}
+#endif
 
 void ExecutableDirectoryUtils::Initialize(char* command_line_executable_path){
 	#ifdef WIN_SYSTEM
@@ -79,8 +85,8 @@ void ExecutableDirectoryUtils::Initialize(char* command_line_executable_path){
 		working_directory[0] = '\0';
 
 		char* result = getcwd(working_directory, sizeof(working_directory));
-		if (result == NULL) {
-			error(EXIT_FAILURE, errno, "failed after executing getcwd");
+		if (result != NULL) {
+			handleFatalError(EXIT_FAILURE, errno, "failed after executing getcwd");
 		}
 		size_t working_directory_length = strlen(working_directory);	
 		if (working_directory[working_directory_length - 1] != '/') {

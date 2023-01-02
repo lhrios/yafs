@@ -1,8 +1,8 @@
 SHELL = bash
 CXX = g++
-CPPFLAGS = -I/Users/farrer/projetos/yafs/xerces-c-2.8.0/include/ -DUNIX_SYSTEM
+CPPFLAGS = -DUNIX_SYSTEM -I/opt/homebrew/include 
 CFLAGS = -Wall -g1 -O2
-LFLAGS = /Users/farrer/projetos/yafs/xerces-c-2.8.0/lib/libxerces-depdom.a /Users/farrer/projetos/yafs/xerces-c-2.8.0/lib/libxerces-c.a -framework CoreServices
+LFLAGS = /opt/homebrew/lib/libxerces-c.a -lpthread -lcurl -framework CoreServices
 
 bin_path = bin
 dep_path = dep

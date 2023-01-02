@@ -4,7 +4,6 @@ CPPFLAGS = -DUNIX_SYSTEM
 CFLAGS = -std=c++11 -Wall -g1 -O2
 LFLAGS = -lxerces-c -lc -lpthread
 
-
 bin_path = bin
 dep_path = dep
 VPATH = $(dep_path) $(bin_path)
