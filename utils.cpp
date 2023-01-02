@@ -85,7 +85,7 @@ void ExecutableDirectoryUtils::Initialize(char* command_line_executable_path){
 		working_directory[0] = '\0';
 
 		char* result = getcwd(working_directory, sizeof(working_directory));
-		if (result != NULL) {
+		if (result == NULL) {
 			handleFatalError(EXIT_FAILURE, errno, "failed after executing getcwd");
 		}
 		size_t working_directory_length = strlen(working_directory);	
