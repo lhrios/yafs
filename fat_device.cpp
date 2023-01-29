@@ -50,7 +50,8 @@ FATDevice::FATDevice(const char *path, const char *access_mode){
 		device_file = new FileIO(path , access_mode, true);
 
 		device_file->Read(sector_buffer.get() , 4096, 0);
-      memcpy(&bs_bpb , sector_buffer.get() , sizeof(BootSectorBIOSParameterBlock));
+		memcpy(&bs_bpb , sector_buffer.get() , sizeof(BootSectorBIOSParameterBlock));
+
 		/* It will do some tests to check if the device has a FAT file system. */
 		/* Check BS_jmpBoot. */
 		if(!((bs_bpb.BS_jmpBoot[0] == 0xEB && bs_bpb.BS_jmpBoot[2] ==  0x90) ||

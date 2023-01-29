@@ -1,43 +1,33 @@
-#SHELL = bash.exe
 CXX = g++
-# CPPFLAGS = -DNDEBUG
-CPPFLAGS = -DWIN_SYSTEM -I/c/MinGW/xerces-c-src_2_8_0/include/ -L/c/MinGW/xerces-c-src_2_8_0/lib/
-CFLAGS = -Wall -g1 -O2
+CPPFLAGS = -DWIN_SYSTEM
+CFLAGS = -Wall -g1 -O2 -mno-ms-bitfields # https://gcc.gnu.org/bugzilla/show_bug.cgi?id=52991
 LFLAGS = -lxerces-c
 
 bin_path = bin
-VPATH = $(bin_path)
+dep_path = dep
+VPATH = $(dep_path) $(bin_path)
 
-yafs.exe : command_line_parser.o fat_device.o fat_elements.o file_io.o main.o unicode.o utils.o version.o xercesc.o
-	$(CXX) $(CFLAGS) $(CPPFLAGS) $(?:%.o=$(bin_path)/%.o) $(LFLAGS) -o $(bin_path)/$@
-	#strip $(bin_path)/$@
+executable = yafs.exe
+-include sources
+objects = $(sources:%.cpp=%.o)
+objects_with_path = $(sources:%.cpp=$(bin_path)/%.o)
+dependences = $(sources:%.cpp=%.d)
+dependences_with_path = $(sources:%.cpp=$(dep_path)/%.d)
 
+$(executable) : $(dependences) $(objects)
+	$(CXX) $(CFLAGS) $(CPPFLAGS) $(objects_with_path) $(LFLAGS) -o $(bin_path)/$(executable)
+
+.PHONY : clean
 clean :
-	rm -f $(bin_path)/*.o $(bin_path)/*.exe
+	rm -f $(dependences_with_path) $(objects_with_path) $(bin_path)/$(executable)
+
+-include $(dependences_with_path)
 
 %.o : %.cpp
 	$(CXX) -c $(CFLAGS) $(CPPFLAGS) $< -o $(bin_path)/$@
 
-command_line_parser.o : Makefile_mingw command_line_parser.cpp command_line_parser.h
-
-fat_device.o : Makefile_mingw fat_device.cpp fat_device.h exception.h \
- fat.h pack.h types.h fat_device_type.h fat_elements.h string_compare.h \
- file_io.h
-
-fat_elements.o : Makefile_mingw fat_elements.cpp fat.h pack.h types.h fat_elements.h \
- fat_device_type.h exception.h string_compare.h unicode.h utils.h \
- xercesc.h
-
-file_io.o : Makefile_mingw file_io.cpp file_io.h exception.h types.h utils.h
-
-main.o : Makefile_mingw main.cpp command_line_parser.h exception.h fat_device.h fat.h \
- pack.h types.h fat_device_type.h fat_elements.h string_compare.h \
- file_io.h version.h utils.h
-
-unicode.o : Makefile_mingw unicode.cpp types.h unicode.h exception.h
-
-utils.o : Makefile_mingw utils.cpp types.h utils.h
-
-version.o : Makefile_mingw version.cpp version.h
-
-xercesc.o : Makefile_mingw xercesc.cpp xercesc.h exception.h types.h
+$(dep_path)/%.d : %.cpp
+	@rm -f $@.tmp
+	@$(CXX) -MM $(CPPFLAGS) $< > $@.tmp
+	@sed 's,\($*\)\.o[ :]*,\1.o $@ : Makefile_mingw ,g' < $@.tmp > $@
+	@rm -f $@.tmp

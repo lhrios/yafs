@@ -25,12 +25,12 @@
 #include <cstring>
 #include <iostream>
 
-#ifndef _MSC_VER
-	#include <unistd.h>
-#else
+#if defined(_MSC_VER) || defined(__MINGW32__) || defined(__MINGW64__)
 	#define WIN32_LEAN_AND_MEAN
 	#include "windows.h"
 	#undef WIN32_LEAN_AND_MEAN
+#else
+	#include <unistd.h>
 #endif
 
 string ExecutableDirectoryUtils::executable_directory_uri_utf8;
@@ -41,7 +41,8 @@ bool LogUtils::enabled = false;
 
 #ifdef UNIX_SYSTEM
 	void handleFatalError(int status, int errnum, const char* message) {
-		cerr << "yafs: " << message << endl;
+		cerr << "yafs: " << message << ": " << strerror(errnum) << endl;
+		cerr.flush();
 		exit(status);
 	}
 #endif

@@ -18,12 +18,8 @@ dependences_with_path = $(sources:%.cpp=$(dep_path)/%.d)
 $(executable) : $(dependences) $(objects)
 	$(CXX) $(CFLAGS) $(CPPFLAGS) $(objects_with_path) $(LFLAGS) -o $(bin_path)/$(executable)
 
-.PHONY : Makefile.nmake
-Makefile.nmake : $(dependences_with_path)
-	rm -rf "$@"
-	for c in "$?"; do cat $$c >> "$@"; done;
-
-.PHONY clean :
+.PHONY : clean
+clean :
 	rm -f $(dependences_with_path) $(objects_with_path) $(bin_path)/$(executable)
 
 -include $(dependences_with_path)

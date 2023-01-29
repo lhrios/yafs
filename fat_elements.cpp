@@ -46,9 +46,9 @@ stringstream* PrintTabs(stringstream *buffer , uint32 n_tabs){
 	return buffer;
 }
 
-stringstream* PrintAndReplaceReservedCharacters(stringstream *buffer , uint8 *short_name){
-	for(uint32 i = 0 ; short_name[i] ; i++) {
-		switch (short_name[i]) {
+template <class CharSequence> stringstream* PrintAndReplaceReservedCharacters(stringstream *buffer , CharSequence char_sequence){
+	for(uint32 i = 0 ; char_sequence[i] ; i++) {
+		switch (char_sequence[i]) {
 			case '<':
 				(*buffer) << "&lt;";
 			break;
@@ -65,7 +65,7 @@ stringstream* PrintAndReplaceReservedCharacters(stringstream *buffer , uint8 *sh
 				(*buffer) << "&quot;";
 			break;
 			default:
-				(*buffer) << ((char) short_name[i]);
+				(*buffer) << ((char) char_sequence[i]);
 			break;
 		}
 	}
@@ -290,10 +290,10 @@ string RootDirectory::ToXML(){
 	stringstream buffer;
 	uint32 i;
 
-	buffer << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << endl <<
-		"<root xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
-		"xsi:noNamespaceSchemaLocation=\"" << ExecutableDirectoryUtils::GetExecutableDirectoryURIUFT8() <<
-		xsd_file_name << "\">" << endl;
+	buffer << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << endl;
+	buffer << "<root xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"";
+	(*PrintAndReplaceReservedCharacters(&buffer, ExecutableDirectoryUtils::GetExecutableDirectoryURIUFT8())) << xsd_file_name << "\">" << endl;
+
 	for(i = 0 ; i < content.size() ; i++){
 		buffer << content[i]->ToXML(1);
 	}

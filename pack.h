@@ -29,6 +29,9 @@
 		/* Microsoft Compiler. */
 		#elif _MSC_VER
 			#define PACK(D) __pragma(pack(push, 1)) D __pragma(pack(pop))
+
+		#else
+			#error "Unknown compiler"
 		#endif
 
 	/* Unix. */

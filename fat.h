@@ -60,6 +60,9 @@
 		uint32 BPB_HiddSec;
 		uint32 BPB_TotSec32;
 	});
+	#ifndef __APPLE__
+		static_assert(sizeof(BootSectorBIOSParameterBlock) == 36, "Expecting BootSectorBIOSParameterBlock with 36 bytes length");
+	#endif
 
 	/* BIOS Parameter Block is only present in FAT32. */
 	PACK(struct BIOSParameterBlockFAT32{
@@ -71,6 +74,9 @@
 		uint16 BPB_BkBootSec;
 		uint8 BPB_Reserved[12];
 	});
+	#ifndef __APPLE__
+		static_assert(sizeof(BIOSParameterBlockFAT32) == 28, "Expecting BIOSParameterBlockFAT32 with 28 bytes length");
+	#endif
 
 	/* The Boot Sector is present in all FAT systems. */
 	PACK(struct BootSectorFAT{
@@ -81,6 +87,9 @@
 		uint8 BS_VolLab[11];
 		uint8 BS_FilSysType[8];
 	});
+	#ifndef __APPLE__
+		static_assert(sizeof(BootSectorFAT) == 26, "Expecting BootSectorFAT with 26 bytes length");
+	#endif
 
 	/* Directory Entry Structure. */
 	PACK(struct DirectoryEntryStructure{
@@ -97,6 +106,9 @@
 		uint16 DIR_FstClusLO;
 		uint32 DIR_FileSize;
 	});
+	#ifndef __APPLE__
+		static_assert(sizeof(DirectoryEntryStructure) == 32, "Expecting DirectoryEntryStructure with 32 bytes length");
+	#endif
 
 	/* Long Directory Entry Structure. */
 	PACK(struct LongDirectoryEntryStructure{
@@ -109,6 +121,9 @@
 		uint16 LDIR_FstClusLO;
 		uint16 LDIR_Name3[2];
 	});
+	#ifndef __APPLE__
+		static_assert(sizeof(LongDirectoryEntryStructure) == 32, "Expecting LongDirectoryEntryStructure with 32 bytes length");
+	#endif
 
 	/* The union of a LDES with a DES. */
 	PACK(union GenericEntry{
