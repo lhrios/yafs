@@ -1,8 +1,13 @@
+DEP_PKGS = xerces-c libcurl
+# To setup:
+# 1. Install https://brew.sh
+# 2. Run: $ brew install pkg-config xerces-c libcurl
+# 3. Run: $ make -f Makefile_macosx
 SHELL = bash
 CXX = g++
-CPPFLAGS = -DUNIX_SYSTEM -I/opt/homebrew/include 
+CPPFLAGS = -DUNIX_SYSTEM $(shell pkg-config --cflags $(DEP_PKGS))
 CFLAGS = -Wall -g1 -O2
-LFLAGS = /opt/homebrew/lib/libxerces-c.a -lpthread -lcurl -framework CoreServices
+LFLAGS = $(shell pkg-config --libs $(DEP_PKGS)) -lpthread -framework CoreServices
 
 bin_path = bin
 dep_path = dep
